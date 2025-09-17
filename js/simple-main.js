@@ -239,6 +239,8 @@ async function simpleConnectAPI() {
         
         // 更新API客户端配置
         apiClient.baseURL = baseURL;
+        apiClient.baseURL = "https://8000-iozocmozl0jw4if1u0bd7-0f6693c2.manusvm.computer"; // Force update to the new exposed URL
+
         apiClient.apiKey = apiKey;
         apiClient.apiSecret = apiSecret;
         
