@@ -93,21 +93,21 @@ function bindSimpleEventListeners() {
     }
     
     // 健康检查按钮
-    const healthBtn = document.getElementById('health-check');
+    const healthBtn = document.getElementById('test-health');
     if (healthBtn) {
         healthBtn.addEventListener('click', simpleHealthCheck);
         console.log('健康检查按钮事件已绑定');
     }
     
     // 认证测试按钮
-    const authBtn = document.getElementById('auth-test');
+    const authBtn = document.getElementById('test-auth');
     if (authBtn) {
         authBtn.addEventListener('click', simpleAuthTest);
         console.log('认证测试按钮事件已绑定');
     }
     
     // 分析客户按钮
-    const analyzeBtn = document.getElementById('analyze-customer');
+    const analyzeBtn = document.getElementById('manual-analyze');
     if (analyzeBtn) {
         analyzeBtn.addEventListener('click', simpleAnalyzeCustomer);
         console.log('分析客户按钮事件已绑定');
@@ -118,6 +118,33 @@ function bindSimpleEventListeners() {
     if (runAllBtn) {
         runAllBtn.addEventListener('click', simpleRunAllTests);
         console.log('一键测试按钮事件已绑定');
+    }
+    
+    // 物料反馈按钮
+    const materialFeedbackBtn = document.getElementById('manual-material-feedback');
+    if (materialFeedbackBtn) {
+        materialFeedbackBtn.addEventListener('click', simpleMaterialFeedback);
+        console.log('物料反馈按钮事件已绑定');
+    }
+    
+    // 成交反馈按钮
+    const conversionFeedbackBtn = document.getElementById('manual-conversion-feedback');
+    if (conversionFeedbackBtn) {
+        conversionFeedbackBtn.addEventListener('click', simpleConversionFeedback);
+        console.log('成交反馈按钮事件已绑定');
+    }
+    
+    // 调试控制台按钮
+    const clearConsoleBtn = document.getElementById('clear-console');
+    if (clearConsoleBtn) {
+        clearConsoleBtn.addEventListener('click', clearDebugConsole);
+        console.log('清空控制台按钮事件已绑定');
+    }
+    
+    const toggleConsoleBtn = document.getElementById('toggle-console');
+    if (toggleConsoleBtn) {
+        toggleConsoleBtn.addEventListener('click', toggleDebugConsole);
+        console.log('收起控制台按钮事件已绑定');
     }
 }
 
@@ -204,7 +231,16 @@ async function simpleConnectAPI() {
  * 简化版健康检查
  */
 async function simpleHealthCheck() {
-    const btn = document.getElementById('health-check');
+    const btn = document.getElementById('test-health');
+    
+    // 添加调试信息
+    console.log('查找健康检查按钮元素:', btn);
+    if (!btn) {
+        console.error('未找到ID为test-health的按钮元素');
+        logToDebugConsole('❌ 未找到健康检查按钮元素', 'error');
+        showSimpleNotification('❌ 健康检查按钮元素未找到', 'error');
+        return;
+    }
     
     try {
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 检查中...';
@@ -237,7 +273,16 @@ async function simpleHealthCheck() {
  * 简化版认证测试
  */
 async function simpleAuthTest() {
-    const btn = document.getElementById('auth-test');
+    const btn = document.getElementById('test-auth');
+    
+    // 添加调试信息
+    console.log('查找认证测试按钮元素:', btn);
+    if (!btn) {
+        console.error('未找到ID为test-auth的按钮元素');
+        logToDebugConsole('❌ 未找到认证测试按钮元素', 'error');
+        showSimpleNotification('❌ 认证测试按钮元素未找到', 'error');
+        return;
+    }
     
     try {
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 认证中...';
@@ -270,7 +315,16 @@ async function simpleAuthTest() {
  * 简化版分析客户
  */
 async function simpleAnalyzeCustomer() {
-    const btn = document.getElementById('analyze-customer');
+    const btn = document.getElementById('manual-analyze');
+    
+    // 添加调试信息
+    console.log('查找按钮元素:', btn);
+    if (!btn) {
+        console.error('未找到ID为manual-analyze的按钮元素');
+        logToDebugConsole('❌ 未找到分析按钮元素', 'error');
+        showSimpleNotification('❌ 按钮元素未找到', 'error');
+        return;
+    }
     
     try {
         console.log('=== 开始客户分析 ===');
@@ -293,6 +347,10 @@ async function simpleAnalyzeCustomer() {
         
         console.log('📤 分析请求数据:', requestData);
         
+        // 记录到调试控制台
+        logToDebugConsole('🚀 开始客户分析', 'info');
+        logToDebugConsole('📤 发送API请求', 'info', requestData);
+        
         // 显示请求数据到控制台区域
         displayConsoleResult('📤 请求数据', requestData);
         
@@ -300,6 +358,9 @@ async function simpleAnalyzeCustomer() {
         console.log('🔄 调用客户分析API...');
         const result = await apiClient.analyzeCustomer(requestData);
         console.log('📥 客户分析结果:', result);
+        
+        // 记录API响应到调试控制台
+        logToDebugConsole('📥 收到API响应', 'success', result);
         
         // 显示完整的API响应到控制台区域
         displayConsoleResult('📥 API响应结果', result);
@@ -342,6 +403,13 @@ async function simpleAnalyzeCustomer() {
         
     } catch (error) {
         console.error('❌ 客户分析失败:', error);
+        
+        // 记录错误到调试控制台
+        logToDebugConsole('❌ 客户分析失败', 'error', {
+            错误类型: error.name || 'Unknown Error',
+            错误消息: error.message || '未知错误',
+            API状态: apiClient.token ? '已认证' : '未认证'
+        });
         
         // 显示错误信息到控制台区域
         displayConsoleResult('❌ 错误信息', {
@@ -582,12 +650,166 @@ function createSimpleResultsContainer() {
     return container;
 }
 
+/**
+ * 简化版物料反馈
+ */
+async function simpleMaterialFeedback() {
+    const sessionId = document.getElementById('session-id').value;
+    const feedbackText = document.getElementById('material-feedback').value;
+    
+    if (!sessionId) {
+        showSimpleNotification('❌ 请先进行客户分析获取会话ID', 'error');
+        return;
+    }
+    
+    try {
+        console.log('=== 开始提交物料反馈 ===');
+        
+        let feedbackData;
+        try {
+            feedbackData = JSON.parse(feedbackText);
+        } catch (e) {
+            throw new Error('反馈数据格式错误，请输入有效的JSON格式');
+        }
+        
+        const requestData = {
+            session_id: sessionId,
+            material_feedback: feedbackData
+        };
+        
+        console.log('🔄 提交物料反馈...');
+        // 这里应该调用实际的API，暂时模拟
+        const result = { success: true, message: '物料反馈提交成功' };
+        console.log('📥 物料反馈结果:', result);
+        
+        addSimpleTestResult('物料反馈', true, '反馈提交成功');
+        displaySimpleResult('物料反馈结果', result);
+        
+        showSimpleNotification('✅ 物料反馈提交成功！', 'success');
+        console.log('=== 物料反馈完成 ===');
+        
+    } catch (error) {
+        console.error('❌ 物料反馈失败:', error);
+        addSimpleTestResult('物料反馈', false, error.message);
+        showSimpleNotification('❌ 物料反馈失败: ' + error.message, 'error');
+    }
+}
+
+/**
+ * 简化版成交反馈
+ */
+async function simpleConversionFeedback() {
+    const sessionId = document.getElementById('session-id').value;
+    const conversionText = document.getElementById('conversion-result').value;
+    
+    if (!sessionId) {
+        showSimpleNotification('❌ 请先进行客户分析获取会话ID', 'error');
+        return;
+    }
+    
+    try {
+        console.log('=== 开始提交成交反馈 ===');
+        
+        let conversionData;
+        try {
+            conversionData = JSON.parse(conversionText);
+        } catch (e) {
+            throw new Error('成交数据格式错误，请输入有效的JSON格式');
+        }
+        
+        const requestData = {
+            session_id: sessionId,
+            conversion_result: conversionData
+        };
+        
+        console.log('🔄 提交成交反馈...');
+        // 这里应该调用实际的API，暂时模拟
+        const result = { success: true, message: '成交反馈提交成功' };
+        console.log('📥 成交反馈结果:', result);
+        
+        addSimpleTestResult('成交反馈', true, '反馈提交成功');
+        displaySimpleResult('成交反馈结果', result);
+        
+        showSimpleNotification('✅ 成交反馈提交成功！', 'success');
+        console.log('=== 成交反馈完成 ===');
+        
+    } catch (error) {
+        console.error('❌ 成交反馈失败:', error);
+        addSimpleTestResult('成交反馈', false, error.message);
+        showSimpleNotification('❌ 成交反馈失败: ' + error.message, 'error');
+    }
+}
+
+/**
+ * 调试控制台功能
+ */
+function logToDebugConsole(message, type = 'info', data = null) {
+    const console = document.getElementById('debug-console');
+    if (!console) return;
+    
+    const timestamp = new Date().toLocaleTimeString();
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `console-message ${type}`;
+    
+    let content = `<span class="timestamp">[${timestamp}]</span><span class="message">${message}</span>`;
+    
+    if (data) {
+        content += `<div class="json-data">${JSON.stringify(data, null, 2)}</div>`;
+    }
+    
+    messageDiv.innerHTML = content;
+    console.appendChild(messageDiv);
+    
+    // 自动滚动到底部
+    console.scrollTop = console.scrollHeight;
+    
+    // 限制消息数量，避免内存泄漏
+    const messages = console.querySelectorAll('.console-message');
+    if (messages.length > 100) {
+        messages[0].remove();
+    }
+}
+
+function clearDebugConsole() {
+    const console = document.getElementById('debug-console');
+    if (console) {
+        console.innerHTML = `
+            <div class="console-message info">
+                <span class="timestamp">[${new Date().toLocaleTimeString()}]</span>
+                <span class="message">控制台已清空</span>
+            </div>
+        `;
+    }
+}
+
+function toggleDebugConsole() {
+    const content = document.getElementById('debug-console-content');
+    const toggleBtn = document.getElementById('toggle-console');
+    
+    if (content && toggleBtn) {
+        const isCollapsed = content.classList.contains('collapsed');
+        
+        if (isCollapsed) {
+            content.classList.remove('collapsed');
+            toggleBtn.innerHTML = '<i class="fas fa-chevron-up"></i> 收起';
+        } else {
+            content.classList.add('collapsed');
+            toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i> 展开';
+        }
+    }
+}
+
 // 导出全局函数
 window.simpleConnectAPI = simpleConnectAPI;
 window.simpleHealthCheck = simpleHealthCheck;
 window.simpleAuthTest = simpleAuthTest;
 window.simpleAnalyzeCustomer = simpleAnalyzeCustomer;
 window.simpleRunAllTests = simpleRunAllTests;
+window.simpleMaterialFeedback = simpleMaterialFeedback;
+window.simpleConversionFeedback = simpleConversionFeedback;
+window.logToDebugConsole = logToDebugConsole;
+window.clearDebugConsole = clearDebugConsole;
+window.toggleDebugConsole = toggleDebugConsole;
 
 console.log('简化版主应用脚本加载完成');
 

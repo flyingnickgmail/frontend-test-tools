@@ -584,3 +584,111 @@ body {
     background: #555;
 }
 
+
+/* 调试控制台样式 */
+.debug-console-section {
+    margin-top: 1rem;
+}
+
+.console-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.debug-console {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    padding: 1rem;
+    border-radius: 4px;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #333;
+}
+
+.console-message {
+    margin-bottom: 0.5rem;
+    padding: 0.25rem 0;
+    border-left: 3px solid transparent;
+    padding-left: 0.5rem;
+}
+
+.console-message.info {
+    border-left-color: #3498db;
+    color: #87ceeb;
+}
+
+.console-message.success {
+    border-left-color: #27ae60;
+    color: #90ee90;
+}
+
+.console-message.error {
+    border-left-color: #e74c3c;
+    color: #ff6b6b;
+}
+
+.console-message.warning {
+    border-left-color: #f39c12;
+    color: #ffd700;
+}
+
+.console-message .timestamp {
+    color: #888;
+    font-size: 0.8rem;
+    margin-right: 0.5rem;
+}
+
+.console-message .message {
+    word-wrap: break-word;
+}
+
+.console-message .json-data {
+    background: #2d2d2d;
+    padding: 0.5rem;
+    margin-top: 0.25rem;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    white-space: pre-wrap;
+    border-left: 2px solid #555;
+}
+
+.console-message .api-request {
+    color: #61dafb;
+}
+
+.console-message .api-response {
+    color: #98fb98;
+}
+
+.console-message .api-error {
+    color: #ff6b6b;
+}
+
+/* 控制台收起/展开动画 */
+#debug-console-content {
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    overflow: hidden;
+}
+
+#debug-console-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+    padding: 0;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .debug-console {
+        font-size: 0.75rem;
+        max-height: 200px;
+    }
+    
+    .console-controls {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+}
+
