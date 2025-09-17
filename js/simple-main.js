@@ -146,6 +146,57 @@ function bindSimpleEventListeners() {
         toggleConsoleBtn.addEventListener('click', toggleDebugConsole);
         console.log('收起控制台按钮事件已绑定');
     }
+    
+    // 知识库管理按钮
+    const refreshKbBtn = document.getElementById('refresh-kb');
+    if (refreshKbBtn) {
+        refreshKbBtn.addEventListener('click', refreshKnowledgeBase);
+        console.log('刷新知识库按钮事件已绑定');
+    }
+    
+    const downloadKbBtn = document.getElementById('download-kb');
+    if (downloadKbBtn) {
+        downloadKbBtn.addEventListener('click', downloadKnowledgeBase);
+        console.log('下载知识库按钮事件已绑定');
+    }
+    
+    const toggleKbBtn = document.getElementById('toggle-kb');
+    if (toggleKbBtn) {
+        toggleKbBtn.addEventListener('click', toggleKnowledgeBase);
+        console.log('展开知识库按钮事件已绑定');
+    }
+    
+    const kbUploadBtn = document.getElementById('kb-upload-btn');
+    if (kbUploadBtn) {
+        kbUploadBtn.addEventListener('click', () => {
+            document.getElementById('kb-file-input').click();
+        });
+        console.log('知识库上传按钮事件已绑定');
+    }
+    
+    const kbFileInput = document.getElementById('kb-file-input');
+    if (kbFileInput) {
+        kbFileInput.addEventListener('change', handleKnowledgeBaseUpload);
+        console.log('知识库文件输入事件已绑定');
+    }
+    
+    const kbDropZone = document.getElementById('kb-drop-zone');
+    if (kbDropZone) {
+        kbDropZone.addEventListener('click', () => {
+            document.getElementById('kb-file-input').click();
+        });
+        kbDropZone.addEventListener('dragover', handleKbDragOver);
+        kbDropZone.addEventListener('drop', handleKbDrop);
+        kbDropZone.addEventListener('dragleave', handleKbDragLeave);
+        console.log('知识库拖拽区域事件已绑定');
+    }
+    
+    // 知识库分类切换按钮
+    const kbToggleBtns = document.querySelectorAll('.kb-toggle-btn');
+    kbToggleBtns.forEach(btn => {
+        btn.addEventListener('click', toggleKbCategory);
+    });
+    console.log('知识库分类切换按钮事件已绑定');
 }
 
 /**
@@ -387,6 +438,21 @@ async function simpleAnalyzeCustomer() {
                 推荐物料数量: analysisData.recommendations?.length || 0,
                 销售策略: analysisData.sales_strategy?.communication_style || '未提供'
             });
+            
+            // 自动填入会话ID到反馈区域
+            if (analysisData.session_id) {
+                const sessionIdInput = document.getElementById('session-id');
+                if (sessionIdInput) {
+                    sessionIdInput.value = analysisData.session_id;
+                    console.log('✅ 会话ID已自动填入:', analysisData.session_id);
+                    logToDebugConsole('✅ 会话ID已自动填入', 'success', { session_id: analysisData.session_id });
+                } else {
+                    console.warn('⚠️ 未找到会话ID输入框');
+                }
+            } else {
+                console.warn('⚠️ API响应中未包含会话ID');
+                logToDebugConsole('⚠️ API响应中未包含会话ID', 'warning');
+            }
         }
         
         // 自动滚动到结果区域
@@ -818,4 +884,567 @@ console.log('简化版主应用脚本加载完成');
 // 添加控制台清空按钮到全局函数
 window.clearConsoleResults = clearConsoleResults;
 window.displayConsoleResult = displayConsoleResult;
+
+
+
+// ==================== 知识库管理功能 ====================
+
+/**
+ * 刷新知识库
+ */
+async function refreshKnowledgeBase() {
+    const btn = document.getElementById('refresh-kb');
+    
+    try {
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 刷新中...';
+        btn.disabled = true;
+        
+        // 模拟API调用获取知识库数据
+        const knowledgeBaseData = await fetchKnowledgeBaseData();
+        
+        // 更新知识库显示
+        updateKnowledgeBaseDisplay(knowledgeBaseData);
+        
+        // 更新统计信息
+        updateKnowledgeBaseStats(knowledgeBaseData);
+        
+        showSimpleNotification('✅ 知识库刷新成功！', 'success');
+        logToDebugConsole('✅ 知识库刷新完成', 'success');
+        
+    } catch (error) {
+        console.error('知识库刷新失败:', error);
+        showSimpleNotification('❌ 知识库刷新失败: ' + error.message, 'error');
+        logToDebugConsole('❌ 知识库刷新失败', 'error', { error: error.message });
+    } finally {
+        btn.innerHTML = '<i class="fas fa-sync"></i> 刷新';
+        btn.disabled = false;
+    }
+}
+
+/**
+ * 下载知识库
+ */
+async function downloadKnowledgeBase() {
+    const btn = document.getElementById('download-kb');
+    
+    try {
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 准备中...';
+        btn.disabled = true;
+        
+        // 获取知识库数据
+        const knowledgeBaseData = await fetchKnowledgeBaseData();
+        
+        // 创建下载包
+        const downloadData = {
+            export_time: new Date().toISOString(),
+            version: '1.0.0',
+            data: knowledgeBaseData
+        };
+        
+        // 创建并下载文件
+        const blob = new Blob([JSON.stringify(downloadData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `knowledge_base_${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showSimpleNotification('✅ 知识库下载成功！', 'success');
+        logToDebugConsole('✅ 知识库下载完成', 'success', { filename: a.download });
+        
+    } catch (error) {
+        console.error('知识库下载失败:', error);
+        showSimpleNotification('❌ 知识库下载失败: ' + error.message, 'error');
+        logToDebugConsole('❌ 知识库下载失败', 'error', { error: error.message });
+    } finally {
+        btn.innerHTML = '<i class="fas fa-download"></i> 下载知识库';
+        btn.disabled = false;
+    }
+}
+
+/**
+ * 切换知识库显示
+ */
+function toggleKnowledgeBase() {
+    const content = document.getElementById('knowledge-base-content');
+    const toggleBtn = document.getElementById('toggle-kb');
+    
+    if (content && toggleBtn) {
+        const isHidden = content.style.display === 'none';
+        
+        if (isHidden) {
+            content.style.display = 'block';
+            toggleBtn.innerHTML = '<i class="fas fa-chevron-up"></i> 收起';
+            
+            // 首次展开时加载知识库数据
+            if (!content.dataset.loaded) {
+                refreshKnowledgeBase();
+                content.dataset.loaded = 'true';
+            }
+        } else {
+            content.style.display = 'none';
+            toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i> 展开';
+        }
+    }
+}
+
+/**
+ * 处理知识库文件上传
+ */
+async function handleKnowledgeBaseUpload(event) {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+    
+    try {
+        for (const file of files) {
+            await processKnowledgeBaseFile(file);
+        }
+        
+        // 上传完成后刷新显示
+        await refreshKnowledgeBase();
+        
+        showSimpleNotification(`✅ 成功上传 ${files.length} 个文件！`, 'success');
+        
+    } catch (error) {
+        console.error('文件上传失败:', error);
+        showSimpleNotification('❌ 文件上传失败: ' + error.message, 'error');
+    }
+    
+    // 清空文件输入
+    event.target.value = '';
+}
+
+/**
+ * 处理拖拽上传
+ */
+function handleKbDragOver(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    event.currentTarget.classList.add('dragover');
+}
+
+function handleKbDragLeave(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    event.currentTarget.classList.remove('dragover');
+}
+
+function handleKbDrop(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    event.currentTarget.classList.remove('dragover');
+    
+    const files = event.dataTransfer.files;
+    if (files && files.length > 0) {
+        // 模拟文件输入事件
+        const fileInput = document.getElementById('kb-file-input');
+        if (fileInput) {
+            // 创建新的文件列表
+            const dt = new DataTransfer();
+            for (const file of files) {
+                dt.items.add(file);
+            }
+            fileInput.files = dt.files;
+            
+            // 触发change事件
+            const changeEvent = new Event('change', { bubbles: true });
+            fileInput.dispatchEvent(changeEvent);
+        }
+    }
+}
+
+/**
+ * 切换知识库分类显示
+ */
+function toggleKbCategory(event) {
+    const btn = event.currentTarget;
+    const targetId = btn.dataset.target;
+    const content = document.getElementById(targetId);
+    
+    if (content) {
+        const isHidden = content.style.display === 'none';
+        
+        if (isHidden) {
+            content.style.display = 'block';
+            btn.classList.add('expanded');
+        } else {
+            content.style.display = 'none';
+            btn.classList.remove('expanded');
+        }
+    }
+}
+
+/**
+ * 获取知识库数据
+ */
+async function fetchKnowledgeBaseData() {
+    // 模拟知识库数据，实际应该从API获取
+    return {
+        personas: {
+            "理性经济型": {
+                "关键词": ["性价比", "油耗", "保养费用", "保值率", "经济", "实用", "省钱"],
+                "特征": {
+                    "年龄段": "30-50岁",
+                    "收入水平": "中等",
+                    "决策风格": "理性分析",
+                    "关注点": ["燃油经济性", "维修成本", "保值率", "实用配置"]
+                },
+                "沟通策略": {
+                    "重点": ["数据支撑", "成本分析", "对比优势"],
+                    "话术风格": "理性客观",
+                    "避免": ["情感化表达", "过度包装"]
+                }
+            },
+            "品质升级型": {
+                "关键词": ["品质", "舒适", "配置", "品牌", "升级", "体验", "档次"],
+                "特征": {
+                    "年龄段": "35-55岁",
+                    "收入水平": "中高等",
+                    "决策风格": "品质导向",
+                    "关注点": ["品牌价值", "配置丰富", "驾乘体验", "面子需求"]
+                },
+                "沟通策略": {
+                    "重点": ["品质体验", "配置优势", "品牌价值"],
+                    "话术风格": "专业权威",
+                    "避免": ["过分强调价格", "低端对比"]
+                }
+            },
+            "年轻个性型": {
+                "关键词": ["时尚", "个性", "科技", "运动", "潮流", "智能", "颜值"],
+                "特征": {
+                    "年龄段": "20-35岁",
+                    "收入水平": "中等偏上",
+                    "决策风格": "感性冲动",
+                    "关注点": ["外观设计", "科技配置", "个性化", "社交属性"]
+                },
+                "沟通策略": {
+                    "重点": ["设计亮点", "科技配置", "个性表达"],
+                    "话术风格": "活力时尚",
+                    "避免": ["传统保守", "过于理性"]
+                }
+            }
+        },
+        stages: {
+            "初次接触": {
+                "目标": "建立信任，了解基本需求",
+                "重点": ["热情接待", "需求探索", "产品介绍"],
+                "关键指标": ["接待时间", "需求识别准确度", "客户满意度"]
+            },
+            "需求挖掘": {
+                "目标": "深入了解客户需求和偏好",
+                "重点": ["详细询问", "需求分析", "痛点识别"],
+                "关键指标": ["需求挖掘深度", "客户画像准确度", "需求匹配度"]
+            },
+            "产品推荐": {
+                "目标": "推荐合适的产品和配置",
+                "重点": ["产品匹配", "优势展示", "价值传递"],
+                "关键指标": ["推荐准确度", "客户接受度", "产品吸引力"]
+            },
+            "试驾体验": {
+                "目标": "让客户体验产品，增强购买意愿",
+                "重点": ["试驾安排", "体验引导", "感受分享"],
+                "关键指标": ["试驾转化率", "体验满意度", "购买意向提升"]
+            },
+            "商务谈判": {
+                "目标": "达成价格和条件共识",
+                "重点": ["价格谈判", "优惠政策", "付款方式"],
+                "关键指标": ["成交价格", "优惠幅度", "客户满意度"]
+            },
+            "签约成交": {
+                "目标": "完成销售流程，签署合同",
+                "重点": ["合同签署", "付款确认", "交车安排"],
+                "关键指标": ["成交率", "客户满意度", "后续服务"]
+            }
+        },
+        rules: {
+            "画像匹配规则": {
+                "理性经济型": ["经济性物料", "对比分析", "成本效益"],
+                "品质升级型": ["品质体验", "配置介绍", "品牌价值"],
+                "年轻个性型": ["设计亮点", "科技配置", "个性化"]
+            },
+            "阶段推荐规则": {
+                "初次接触": ["品牌介绍", "产品概览", "基础资料"],
+                "需求挖掘": ["需求调研表", "产品对比", "配置说明"],
+                "产品推荐": ["产品手册", "配置清单", "价格表"],
+                "试驾体验": ["试驾指南", "体验要点", "安全须知"],
+                "商务谈判": ["优惠政策", "金融方案", "保险介绍"],
+                "签约成交": ["合同模板", "交车流程", "售后服务"]
+            }
+        },
+        materials: [
+            {
+                "id": "MAT_001",
+                "name": "伊兰特燃油经济性对比表",
+                "type": "对比分析",
+                "category": "经济性",
+                "target_personas": ["理性经济型"],
+                "target_stages": ["需求挖掘", "产品推荐"],
+                "description": "详细对比伊兰特与同级别车型的燃油经济性数据"
+            },
+            {
+                "id": "MAT_002",
+                "name": "现代品牌价值介绍",
+                "type": "品牌宣传",
+                "category": "品牌价值",
+                "target_personas": ["品质升级型"],
+                "target_stages": ["初次接触", "产品推荐"],
+                "description": "现代汽车品牌历史、技术实力和市场地位介绍"
+            },
+            {
+                "id": "MAT_003",
+                "name": "智能科技配置展示",
+                "type": "功能演示",
+                "category": "科技配置",
+                "target_personas": ["年轻个性型"],
+                "target_stages": ["产品推荐", "试驾体验"],
+                "description": "展示车辆的智能互联、安全辅助等科技配置"
+            }
+        ]
+    };
+}
+
+/**
+ * 更新知识库显示
+ */
+function updateKnowledgeBaseDisplay(data) {
+    // 更新客户画像
+    updatePersonasDisplay(data.personas);
+    
+    // 更新销售阶段
+    updateStagesDisplay(data.stages);
+    
+    // 更新推荐规则
+    updateRulesDisplay(data.rules);
+    
+    // 更新物料库
+    updateMaterialsDisplay(data.materials);
+}
+
+/**
+ * 更新客户画像显示
+ */
+function updatePersonasDisplay(personas) {
+    const container = document.getElementById('personas-data');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    Object.entries(personas).forEach(([type, info]) => {
+        const item = document.createElement('div');
+        item.className = 'kb-data-item';
+        
+        item.innerHTML = `
+            <div class="kb-data-title">
+                <i class="fas fa-user"></i>
+                <span class="kb-tag persona">${type}</span>
+            </div>
+            <div class="kb-data-content">
+                <p><strong>关键词:</strong> ${info.关键词.join(', ')}</p>
+                <p><strong>年龄段:</strong> ${info.特征.年龄段}</p>
+                <p><strong>决策风格:</strong> ${info.特征.决策风格}</p>
+                <p><strong>关注点:</strong> ${info.特征.关注点.join(', ')}</p>
+            </div>
+            <div class="kb-data-json">${JSON.stringify(info, null, 2)}</div>
+        `;
+        
+        container.appendChild(item);
+    });
+}
+
+/**
+ * 更新销售阶段显示
+ */
+function updateStagesDisplay(stages) {
+    const container = document.getElementById('stages-data');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    Object.entries(stages).forEach(([stage, info]) => {
+        const item = document.createElement('div');
+        item.className = 'kb-data-item';
+        
+        item.innerHTML = `
+            <div class="kb-data-title">
+                <i class="fas fa-chart-line"></i>
+                <span class="kb-tag stage">${stage}</span>
+            </div>
+            <div class="kb-data-content">
+                <p><strong>目标:</strong> ${info.目标}</p>
+                <p><strong>重点:</strong> ${info.重点.join(', ')}</p>
+                <p><strong>关键指标:</strong> ${info.关键指标.join(', ')}</p>
+            </div>
+            <div class="kb-data-json">${JSON.stringify(info, null, 2)}</div>
+        `;
+        
+        container.appendChild(item);
+    });
+}
+
+/**
+ * 更新推荐规则显示
+ */
+function updateRulesDisplay(rules) {
+    const container = document.getElementById('rules-data');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    Object.entries(rules).forEach(([ruleName, ruleData]) => {
+        const item = document.createElement('div');
+        item.className = 'kb-data-item';
+        
+        item.innerHTML = `
+            <div class="kb-data-title">
+                <i class="fas fa-cogs"></i>
+                <span class="kb-tag rule">${ruleName}</span>
+            </div>
+            <div class="kb-data-content">
+                ${Object.entries(ruleData).map(([key, value]) => 
+                    `<p><strong>${key}:</strong> ${Array.isArray(value) ? value.join(', ') : value}</p>`
+                ).join('')}
+            </div>
+            <div class="kb-data-json">${JSON.stringify(ruleData, null, 2)}</div>
+        `;
+        
+        container.appendChild(item);
+    });
+}
+
+/**
+ * 更新物料库显示
+ */
+function updateMaterialsDisplay(materials) {
+    const container = document.getElementById('materials-data');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    materials.forEach(material => {
+        const item = document.createElement('div');
+        item.className = 'kb-data-item';
+        
+        item.innerHTML = `
+            <div class="kb-data-title">
+                <i class="fas fa-folder"></i>
+                <span class="kb-tag material">${material.name}</span>
+            </div>
+            <div class="kb-data-content">
+                <p><strong>ID:</strong> ${material.id}</p>
+                <p><strong>类型:</strong> ${material.type}</p>
+                <p><strong>分类:</strong> ${material.category}</p>
+                <p><strong>目标画像:</strong> ${material.target_personas.join(', ')}</p>
+                <p><strong>适用阶段:</strong> ${material.target_stages.join(', ')}</p>
+                <p><strong>描述:</strong> ${material.description}</p>
+            </div>
+            <div class="kb-data-json">${JSON.stringify(material, null, 2)}</div>
+        `;
+        
+        container.appendChild(item);
+    });
+}
+
+/**
+ * 更新知识库统计
+ */
+function updateKnowledgeBaseStats(data) {
+    // 更新统计数字
+    document.getElementById('kb-personas-count').textContent = Object.keys(data.personas || {}).length;
+    document.getElementById('kb-stages-count').textContent = Object.keys(data.stages || {}).length;
+    document.getElementById('kb-rules-count').textContent = Object.keys(data.rules || {}).length;
+    document.getElementById('kb-materials-count').textContent = (data.materials || []).length;
+}
+
+/**
+ * 处理知识库文件
+ */
+async function processKnowledgeBaseFile(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            try {
+                const content = e.target.result;
+                let data;
+                
+                if (file.name.endsWith('.json')) {
+                    data = JSON.parse(content);
+                } else if (file.name.endsWith('.csv')) {
+                    // 简单的CSV解析（实际项目中应使用专业的CSV解析库）
+                    data = parseCSV(content);
+                } else {
+                    throw new Error('不支持的文件格式');
+                }
+                
+                // 验证数据格式
+                validateKnowledgeBaseData(data);
+                
+                // 这里应该将数据上传到服务器
+                console.log('处理知识库文件:', file.name, data);
+                logToDebugConsole('📁 处理知识库文件', 'info', { filename: file.name, size: file.size });
+                
+                resolve(data);
+                
+            } catch (error) {
+                reject(new Error(`文件 ${file.name} 处理失败: ${error.message}`));
+            }
+        };
+        
+        reader.onerror = function() {
+            reject(new Error(`文件 ${file.name} 读取失败`));
+        };
+        
+        reader.readAsText(file);
+    });
+}
+
+/**
+ * 简单的CSV解析
+ */
+function parseCSV(content) {
+    const lines = content.split('\n');
+    const headers = lines[0].split(',').map(h => h.trim());
+    const data = [];
+    
+    for (let i = 1; i < lines.length; i++) {
+        if (lines[i].trim()) {
+            const values = lines[i].split(',').map(v => v.trim());
+            const row = {};
+            headers.forEach((header, index) => {
+                row[header] = values[index] || '';
+            });
+            data.push(row);
+        }
+    }
+    
+    return data;
+}
+
+/**
+ * 验证知识库数据格式
+ */
+function validateKnowledgeBaseData(data) {
+    // 简单的数据验证
+    if (!data || typeof data !== 'object') {
+        throw new Error('数据格式无效');
+    }
+    
+    // 这里可以添加更详细的验证逻辑
+    return true;
+}
+
+// 导出知识库管理函数到全局
+window.refreshKnowledgeBase = refreshKnowledgeBase;
+window.downloadKnowledgeBase = downloadKnowledgeBase;
+window.toggleKnowledgeBase = toggleKnowledgeBase;
+window.handleKnowledgeBaseUpload = handleKnowledgeBaseUpload;
+window.handleKbDragOver = handleKbDragOver;
+window.handleKbDrop = handleKbDrop;
+window.handleKbDragLeave = handleKbDragLeave;
+window.toggleKbCategory = toggleKbCategory;
+
+console.log('知识库管理功能加载完成');
 

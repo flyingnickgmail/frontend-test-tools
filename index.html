@@ -221,6 +221,131 @@
                     </div>
                 </div>
 
+                <!-- 知识库管理 -->
+                <div class="knowledge-base-section">
+                    <div class="test-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-database"></i> 知识库管理</h3>
+                            <div class="kb-controls">
+                                <button id="refresh-kb" class="btn btn-sm">
+                                    <i class="fas fa-sync"></i> 刷新
+                                </button>
+                                <button id="download-kb" class="btn btn-sm">
+                                    <i class="fas fa-download"></i> 下载知识库
+                                </button>
+                                <button id="toggle-kb" class="btn btn-sm">
+                                    <i class="fas fa-chevron-down"></i> 展开
+                                </button>
+                            </div>
+                        </div>
+                        <div id="knowledge-base-content" class="card-content" style="display: none;">
+                            <!-- 知识库上传区域 -->
+                            <div class="kb-upload-section">
+                                <h4><i class="fas fa-upload"></i> 上传知识库文件</h4>
+                                <div class="upload-area">
+                                    <input type="file" id="kb-file-input" accept=".json,.csv" multiple style="display: none;">
+                                    <div id="kb-drop-zone" class="drop-zone">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <p>拖拽文件到此处或点击选择文件</p>
+                                        <p class="file-types">支持格式: JSON, CSV</p>
+                                    </div>
+                                    <button id="kb-upload-btn" class="btn btn-primary">
+                                        <i class="fas fa-folder-open"></i> 选择文件
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 知识库内容展示 -->
+                            <div class="kb-display-section">
+                                <h4><i class="fas fa-list"></i> 当前知识库内容</h4>
+                                
+                                <!-- 客户画像知识 -->
+                                <div class="kb-category">
+                                    <div class="kb-category-header">
+                                        <h5><i class="fas fa-users"></i> 客户画像</h5>
+                                        <button class="kb-toggle-btn" data-target="personas-content">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                    <div id="personas-content" class="kb-category-content" style="display: none;">
+                                        <div id="personas-data" class="kb-data-display">
+                                            <!-- 客户画像数据将在这里显示 -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 销售阶段知识 -->
+                                <div class="kb-category">
+                                    <div class="kb-category-header">
+                                        <h5><i class="fas fa-chart-line"></i> 销售阶段</h5>
+                                        <button class="kb-toggle-btn" data-target="stages-content">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                    <div id="stages-content" class="kb-category-content" style="display: none;">
+                                        <div id="stages-data" class="kb-data-display">
+                                            <!-- 销售阶段数据将在这里显示 -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 推荐规则 -->
+                                <div class="kb-category">
+                                    <div class="kb-category-header">
+                                        <h5><i class="fas fa-cogs"></i> 推荐规则</h5>
+                                        <button class="kb-toggle-btn" data-target="rules-content">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                    <div id="rules-content" class="kb-category-content" style="display: none;">
+                                        <div id="rules-data" class="kb-data-display">
+                                            <!-- 推荐规则数据将在这里显示 -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 物料库 -->
+                                <div class="kb-category">
+                                    <div class="kb-category-header">
+                                        <h5><i class="fas fa-folder"></i> 物料库</h5>
+                                        <button class="kb-toggle-btn" data-target="materials-content">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                    <div id="materials-content" class="kb-category-content" style="display: none;">
+                                        <div id="materials-data" class="kb-data-display">
+                                            <!-- 物料库数据将在这里显示 -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 知识库统计 -->
+                            <div class="kb-stats-section">
+                                <h4><i class="fas fa-chart-bar"></i> 知识库统计</h4>
+                                <div class="stats-grid">
+                                    <div class="stat-item">
+                                        <div class="stat-value" id="kb-personas-count">0</div>
+                                        <div class="stat-label">客户画像</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-value" id="kb-stages-count">0</div>
+                                        <div class="stat-label">销售阶段</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-value" id="kb-rules-count">0</div>
+                                        <div class="stat-label">推荐规则</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-value" id="kb-materials-count">0</div>
+                                        <div class="stat-label">物料数量</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 调试控制台 -->
                 <div class="debug-console-section">
                     <div class="test-card">

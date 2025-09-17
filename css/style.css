@@ -692,3 +692,311 @@ body {
     }
 }
 
+
+/* 知识库管理样式 */
+.knowledge-base-section {
+    margin-bottom: 2rem;
+}
+
+.kb-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.kb-upload-section {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.upload-area {
+    text-align: center;
+}
+
+.drop-zone {
+    border: 2px dashed #007bff;
+    border-radius: 8px;
+    padding: 2rem;
+    margin: 1rem 0;
+    background: #f8f9ff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.drop-zone:hover {
+    border-color: #0056b3;
+    background: #e6f3ff;
+}
+
+.drop-zone.dragover {
+    border-color: #28a745;
+    background: #e6ffe6;
+}
+
+.drop-zone i {
+    font-size: 2rem;
+    color: #007bff;
+    margin-bottom: 0.5rem;
+}
+
+.drop-zone p {
+    margin: 0.5rem 0;
+    color: #6c757d;
+}
+
+.file-types {
+    font-size: 0.8rem;
+    color: #adb5bd;
+}
+
+.kb-display-section {
+    margin-top: 2rem;
+}
+
+.kb-category {
+    margin-bottom: 1.5rem;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.kb-category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.kb-category-header:hover {
+    background: #e9ecef;
+}
+
+.kb-category-header h5 {
+    margin: 0;
+    color: #495057;
+    font-weight: 600;
+}
+
+.kb-category-header i {
+    margin-right: 0.5rem;
+    color: #007bff;
+}
+
+.kb-toggle-btn {
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.kb-toggle-btn:hover {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.kb-toggle-btn i {
+    transition: transform 0.3s ease;
+}
+
+.kb-toggle-btn.expanded i {
+    transform: rotate(180deg);
+}
+
+.kb-category-content {
+    padding: 1rem;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.kb-data-display {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    background: #f8f9fa;
+}
+
+.kb-data-item {
+    padding: 0.75rem;
+    border-bottom: 1px solid #e9ecef;
+    background: white;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+}
+
+.kb-data-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.kb-data-title {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.kb-data-content {
+    font-size: 0.9rem;
+    color: #6c757d;
+    line-height: 1.4;
+}
+
+.kb-data-json {
+    background: #2d2d2d;
+    color: #f8f9fa;
+    padding: 0.75rem;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-top: 0.5rem;
+}
+
+.kb-stats-section {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.kb-stats-section .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.kb-stats-section .stat-item {
+    text-align: center;
+    padding: 1rem;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+    transition: transform 0.2s ease;
+}
+
+.kb-stats-section .stat-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.kb-stats-section .stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 0.25rem;
+}
+
+.kb-stats-section .stat-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* 知识库数据表格样式 */
+.kb-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.kb-table th,
+.kb-table td {
+    padding: 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.kb-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+}
+
+.kb-table tr:hover {
+    background: #f8f9fa;
+}
+
+/* 知识库标签样式 */
+.kb-tag {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    background: #e7f3ff;
+    color: #0066cc;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    margin: 0.1rem;
+    border: 1px solid #b3d9ff;
+}
+
+.kb-tag.persona {
+    background: #fff3cd;
+    color: #856404;
+    border-color: #ffeaa7;
+}
+
+.kb-tag.stage {
+    background: #d1ecf1;
+    color: #0c5460;
+    border-color: #bee5eb;
+}
+
+.kb-tag.rule {
+    background: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.kb-tag.material {
+    background: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .kb-controls {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .kb-category-header {
+        padding: 0.75rem;
+    }
+    
+    .kb-stats-section .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .drop-zone {
+        padding: 1rem;
+    }
+    
+    .drop-zone i {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .kb-stats-section .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
