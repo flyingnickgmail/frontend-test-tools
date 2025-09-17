@@ -221,6 +221,62 @@
                     </div>
                 </div>
 
+                <!-- 知识库状态检查 -->
+                <div class="kb-status-section">
+                    <div class="test-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-line"></i> 知识库状态检查</h3>
+                            <div class="kb-status-controls">
+                                <button id="check-kb-status" class="btn btn-primary">
+                                    <i class="fas fa-search"></i> 检查知识库状态
+                                </button>
+                                <button id="compare-kb-changes" class="btn btn-info">
+                                    <i class="fas fa-code-compare"></i> 对比变化
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="kb-status-display">
+                                <div class="status-overview">
+                                    <h4>知识库概览</h4>
+                                    <div id="kb-overview" class="overview-grid">
+                                        <div class="overview-item">
+                                            <span class="label">总项目数:</span>
+                                            <span id="total-items" class="value">-</span>
+                                        </div>
+                                        <div class="overview-item">
+                                            <span class="label">知识类型:</span>
+                                            <span id="knowledge-types" class="value">-</span>
+                                        </div>
+                                        <div class="overview-item">
+                                            <span class="label">质量评分:</span>
+                                            <span id="quality-score" class="value">-</span>
+                                        </div>
+                                        <div class="overview-item">
+                                            <span class="label">最后更新:</span>
+                                            <span id="last-updated" class="value">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="knowledge-breakdown">
+                                    <h4>知识分类详情</h4>
+                                    <div id="knowledge-breakdown" class="breakdown-list">
+                                        <!-- 动态生成知识分类详情 -->
+                                    </div>
+                                </div>
+                                
+                                <div class="change-history">
+                                    <h4>变化历史</h4>
+                                    <div id="change-history" class="change-list">
+                                        <!-- 动态生成变化历史 -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 知识库管理 -->
                 <div class="knowledge-base-section">
                     <div class="test-card">
