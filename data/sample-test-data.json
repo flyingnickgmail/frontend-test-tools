@@ -1,0 +1,191 @@
+{
+  "test_scenarios": [
+    {
+      "name": "理性经济型客户场景",
+      "conversation_text": "我想买一辆省油的车，预算8万左右，主要考虑燃油经济性和保养成本。听说这款车油耗比较低，具体是多少？保养费用贵不贵？",
+      "advisor_notes": "客户关注性价比，多次询问油耗和保养费用，对价格比较敏感",
+      "customer_stage": "需求挖掘",
+      "expected_persona": "理性经济型",
+      "context": {
+        "customer_age": 35,
+        "customer_gender": "男",
+        "income_level": "中等",
+        "purchase_purpose": "家用代步"
+      }
+    },
+    {
+      "name": "品质升级型客户场景",
+      "conversation_text": "我比较关注车的配置和安全性能，希望有比较好的舒适性配置。这款车的安全配置怎么样？有没有自动驾驶辅助功能？座椅是真皮的吗？",
+      "advisor_notes": "客户询问了安全配置、舒适性功能，对品质要求较高",
+      "customer_stage": "产品介绍",
+      "expected_persona": "品质升级型",
+      "context": {
+        "customer_age": 42,
+        "customer_gender": "男",
+        "income_level": "中高",
+        "purchase_purpose": "商务家用"
+      }
+    },
+    {
+      "name": "年轻个性型客户场景",
+      "conversation_text": "这款车的外观设计怎么样？颜值很重要，要有个性一点的。有什么特别的颜色吗？内饰设计时尚吗？年轻人开会不会显得老气？",
+      "advisor_notes": "年轻客户，很关注外观设计和个性化，对颜值要求高",
+      "customer_stage": "产品介绍",
+      "expected_persona": "年轻个性型",
+      "context": {
+        "customer_age": 26,
+        "customer_gender": "女",
+        "income_level": "中等",
+        "purchase_purpose": "个人代步"
+      }
+    },
+    {
+      "name": "价格敏感型客户场景",
+      "conversation_text": "这车最低多少钱能拿下？有什么优惠活动吗？首付最低要多少？月供能不能再低一点？其他品牌有没有更便宜的？",
+      "advisor_notes": "客户对价格非常敏感，多次询问优惠和贷款方案",
+      "customer_stage": "价格谈判",
+      "expected_persona": "理性经济型",
+      "context": {
+        "customer_age": 29,
+        "customer_gender": "男",
+        "income_level": "偏低",
+        "purchase_purpose": "首次购车"
+      }
+    },
+    {
+      "name": "家庭用户场景",
+      "conversation_text": "我们家有老人和小孩，需要一辆空间大一点、安全性好的车。后排空间怎么样？儿童安全座椅好装吗？老人上下车方便吗？",
+      "advisor_notes": "家庭用户，关注空间、安全性和便利性",
+      "customer_stage": "需求挖掘",
+      "expected_persona": "品质升级型",
+      "context": {
+        "customer_age": 38,
+        "customer_gender": "女",
+        "income_level": "中高",
+        "purchase_purpose": "家庭用车"
+      }
+    },
+    {
+      "name": "换购客户场景",
+      "conversation_text": "我现在开的是老款轩逸，想换一辆新车。这款车比轩逸有什么优势？配置更好吗？油耗会不会更低？保值率怎么样？",
+      "advisor_notes": "换购客户，有对比经验，关注产品优势和保值率",
+      "customer_stage": "产品对比",
+      "expected_persona": "理性经济型",
+      "context": {
+        "customer_age": 45,
+        "customer_gender": "男",
+        "income_level": "中等",
+        "purchase_purpose": "换购升级"
+      }
+    }
+  ],
+  "material_feedback_samples": [
+    {
+      "material_id": "MAT_001",
+      "usage_status": "已使用",
+      "customer_reaction": "积极",
+      "effectiveness": "高",
+      "notes": "客户对燃油经济性数据很感兴趣，要求提供更详细的对比"
+    },
+    {
+      "material_id": "MAT_002",
+      "usage_status": "已使用",
+      "customer_reaction": "中性",
+      "effectiveness": "中",
+      "notes": "客户看了配置对比表，但没有明显反应"
+    },
+    {
+      "material_id": "MAT_003",
+      "usage_status": "未使用",
+      "customer_reaction": "无",
+      "effectiveness": "无",
+      "notes": "客户对设计视频不感兴趣，直接跳过"
+    }
+  ],
+  "conversion_result_samples": [
+    {
+      "success": true,
+      "deal_amount": 78000,
+      "deal_date": "2024-01-15",
+      "vehicle_model": "伊兰特",
+      "configuration": "1.5L CVT智联版",
+      "notes": "客户对燃油经济性很满意，最终选择了智联版"
+    },
+    {
+      "success": false,
+      "deal_amount": 0,
+      "deal_date": null,
+      "vehicle_model": "伊兰特",
+      "configuration": null,
+      "notes": "客户觉得价格偏高，要回去考虑一下"
+    },
+    {
+      "success": true,
+      "deal_amount": 85000,
+      "deal_date": "2024-01-16",
+      "vehicle_model": "伊兰特",
+      "configuration": "1.5L CVT豪华版",
+      "notes": "客户很喜欢豪华版的配置，当天就签约了"
+    }
+  ],
+  "performance_test_configs": [
+    {
+      "name": "客户分析并发测试",
+      "endpoint": "/api/v1/analyze/customer",
+      "method": "POST",
+      "concurrency": 5,
+      "iterations": 10,
+      "payload": {
+        "conversation_text": "我想了解一下这款车的性价比如何",
+        "advisor_notes": "客户初步咨询",
+        "customer_stage": "需求挖掘"
+      }
+    },
+    {
+      "name": "物料获取性能测试",
+      "endpoint": "/api/v1/materials",
+      "method": "GET",
+      "concurrency": 10,
+      "iterations": 20
+    },
+    {
+      "name": "反馈提交性能测试",
+      "endpoint": "/api/v1/feedback/material",
+      "method": "POST",
+      "concurrency": 3,
+      "iterations": 15,
+      "payload": {
+        "session_id": "TEST_SESSION",
+        "material_feedback": [
+          {
+            "material_id": "MAT_001",
+            "usage_status": "已使用",
+            "customer_reaction": "积极",
+            "effectiveness": "高"
+          }
+        ]
+      }
+    }
+  ],
+  "api_configurations": [
+    {
+      "name": "本地开发环境",
+      "base_url": "http://localhost:8000",
+      "api_key": "dev_api_key",
+      "description": "本地开发测试环境"
+    },
+    {
+      "name": "演示环境",
+      "base_url": "https://mzhyi8c198x6.manus.space",
+      "api_key": "demo_api_key",
+      "description": "在线演示环境"
+    },
+    {
+      "name": "生产环境",
+      "base_url": "https://api.aimarketing.example.com",
+      "api_key": "prod_api_key",
+      "description": "生产环境（需要真实凭据）"
+    }
+  ]
+}
+

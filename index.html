@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI营销助手API测试平台</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-robot"></i> AI营销助手API测试平台</h1>
+                <div class="api-status">
+                    <span id="api-status-indicator" class="status-indicator offline">
+                        <i class="fas fa-circle"></i> 离线
+                    </span>
+                    <span id="api-url">https://mzhyi8c198x6.manus.space</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主要内容区域 -->
+        <main class="main-content">
+            <!-- 左侧控制面板 -->
+            <aside class="control-panel">
+                <div class="panel-section">
+                    <h3><i class="fas fa-cog"></i> 测试控制</h3>
+                    
+                    <!-- API配置 -->
+                    <div class="config-group">
+                        <label for="api-base-url">API地址:</label>
+                        <input type="text" id="api-base-url" value="https://mzhyi8c198x6.manus.space" />
+                        
+                        <label for="api-key">API密钥:</label>
+                        <input type="text" id="api-key" value="demo_api_key" />
+                        
+                        <label for="api-secret">API密钥:</label>
+                        <input type="password" id="api-secret" value="demo_secret" />
+                        
+                        <button id="connect-api" class="btn btn-primary">
+                            <i class="fas fa-plug"></i> 连接API
+                        </button>
+                    </div>
+
+                    <!-- 自动化测试 -->
+                    <div class="test-group">
+                        <h4><i class="fas fa-play-circle"></i> 自动化测试</h4>
+                        <button id="run-all-tests" class="btn btn-success">
+                            <i class="fas fa-rocket"></i> 一键运行所有测试
+                        </button>
+                        <button id="run-basic-tests" class="btn btn-info">
+                            <i class="fas fa-check-circle"></i> 基础功能测试
+                        </button>
+                        <button id="run-business-tests" class="btn btn-warning">
+                            <i class="fas fa-briefcase"></i> 业务逻辑测试
+                        </button>
+                        <button id="run-performance-tests" class="btn btn-secondary">
+                            <i class="fas fa-tachometer-alt"></i> 性能测试
+                        </button>
+                    </div>
+
+                    <!-- 手动测试 -->
+                    <div class="manual-test-group">
+                        <h4><i class="fas fa-hand-pointer"></i> 手动测试</h4>
+                        <button id="test-health" class="btn btn-outline">
+                            <i class="fas fa-heartbeat"></i> 健康检查
+                        </button>
+                        <button id="test-auth" class="btn btn-outline">
+                            <i class="fas fa-key"></i> 认证测试
+                        </button>
+                        <button id="test-analyze" class="btn btn-outline">
+                            <i class="fas fa-brain"></i> 客户分析
+                        </button>
+                        <button id="test-materials" class="btn btn-outline">
+                            <i class="fas fa-folder"></i> 物料获取
+                        </button>
+                    </div>
+
+                    <!-- 测试数据管理 -->
+                    <div class="data-group">
+                        <h4><i class="fas fa-database"></i> 测试数据</h4>
+                        <button id="load-sample-data" class="btn btn-outline">
+                            <i class="fas fa-download"></i> 加载示例数据
+                        </button>
+                        <button id="clear-test-data" class="btn btn-outline">
+                            <i class="fas fa-trash"></i> 清空测试数据
+                        </button>
+                        <input type="file" id="upload-test-data" accept=".json,.csv" style="display: none;">
+                        <button id="upload-data-btn" class="btn btn-outline">
+                            <i class="fas fa-upload"></i> 上传测试数据
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 右侧测试区域 -->
+            <section class="test-area">
+                <!-- 测试结果概览 -->
+                <div class="test-overview">
+                    <div class="overview-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-line"></i> 测试概览</h3>
+                            <div class="test-progress">
+                                <div class="progress-bar">
+                                    <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+                                </div>
+                                <span id="progress-text">0/0</span>
+                            </div>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-value" id="total-tests">0</div>
+                                <div class="stat-label">总测试</div>
+                            </div>
+                            <div class="stat-item success">
+                                <div class="stat-value" id="passed-tests">0</div>
+                                <div class="stat-label">通过</div>
+                            </div>
+                            <div class="stat-item error">
+                                <div class="stat-value" id="failed-tests">0</div>
+                                <div class="stat-label">失败</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="avg-response-time">0ms</div>
+                                <div class="stat-label">平均响应</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 手动测试区域 -->
+                <div class="manual-test-section">
+                    <div class="test-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-edit"></i> 手动测试输入</h3>
+                            <button id="toggle-manual-test" class="btn btn-sm">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                        </div>
+                        <div id="manual-test-content" class="card-content">
+                            <!-- 客户分析测试 -->
+                            <div class="test-input-group">
+                                <h4>客户分析测试</h4>
+                                <div class="input-row">
+                                    <label for="conversation-text">对话内容:</label>
+                                    <textarea id="conversation-text" rows="3" placeholder="输入客户对话内容...">我想买一辆省油的车，预算8万左右，主要考虑燃油经济性和保养成本</textarea>
+                                </div>
+                                <div class="input-row">
+                                    <label for="advisor-notes">顾问备注:</label>
+                                    <textarea id="advisor-notes" rows="2" placeholder="输入顾问备注...">客户关注性价比，询问了油耗和保养费用</textarea>
+                                </div>
+                                <div class="input-row">
+                                    <label for="customer-stage">客户阶段:</label>
+                                    <select id="customer-stage">
+                                        <option value="需求挖掘">需求挖掘</option>
+                                        <option value="产品介绍">产品介绍</option>
+                                        <option value="方案介绍">方案介绍</option>
+                                        <option value="商务谈判">商务谈判</option>
+                                        <option value="成交签约">成交签约</option>
+                                    </select>
+                                </div>
+                                <div class="input-row">
+                                    <button id="manual-analyze" class="btn btn-primary">
+                                        <i class="fas fa-brain"></i> 分析客户
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 反馈测试 -->
+                            <div class="test-input-group">
+                                <h4>反馈测试</h4>
+                                <div class="input-row">
+                                    <label for="session-id">会话ID:</label>
+                                    <input type="text" id="session-id" placeholder="会话ID将在分析后自动填入" readonly />
+                                </div>
+                                <div class="input-row">
+                                    <label for="material-feedback">物料反馈:</label>
+                                    <textarea id="material-feedback" rows="3" placeholder='[{"material_id": "MAT_001", "usage_status": "已使用", "customer_reaction": "积极", "effectiveness": "高"}]'></textarea>
+                                </div>
+                                <div class="input-row">
+                                    <button id="manual-material-feedback" class="btn btn-info">
+                                        <i class="fas fa-comment"></i> 提交物料反馈
+                                    </button>
+                                </div>
+                                <div class="input-row">
+                                    <label for="conversion-result">成交结果:</label>
+                                    <textarea id="conversion-result" rows="3" placeholder='{"success": true, "deal_amount": 78000, "deal_date": "2024-01-15", "notes": "客户对燃油经济性很满意"}'></textarea>
+                                </div>
+                                <div class="input-row">
+                                    <button id="manual-conversion-feedback" class="btn btn-success">
+                                        <i class="fas fa-handshake"></i> 提交成交反馈
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 测试结果显示 -->
+                <div class="test-results-section">
+                    <div class="test-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-list-alt"></i> 测试结果</h3>
+                            <div class="result-controls">
+                                <button id="clear-results" class="btn btn-sm">
+                                    <i class="fas fa-eraser"></i> 清空结果
+                                </button>
+                                <button id="export-results" class="btn btn-sm">
+                                    <i class="fas fa-download"></i> 导出结果
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div id="test-results" class="test-results">
+                                <!-- 测试结果将在这里显示 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 底部状态栏 -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="status-info">
+                    <span id="last-test-time">最后测试: 未执行</span>
+                    <span id="api-version">API版本: 未知</span>
+                </div>
+                <div class="footer-actions">
+                    <button id="show-logs" class="btn btn-sm">
+                        <i class="fas fa-file-alt"></i> 查看日志
+                    </button>
+                    <button id="show-help" class="btn btn-sm">
+                        <i class="fas fa-question-circle"></i> 帮助
+                    </button>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 模态框 -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">标题</h3>
+                <button id="modal-close" class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="modal-body" class="modal-body">
+                <!-- 模态框内容 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 加载脚本 -->
+    <script src="js/api-client.js"></script>
+    <script src="js/test-runner.js"></script>
+    <script src="js/ui-controller.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
+
