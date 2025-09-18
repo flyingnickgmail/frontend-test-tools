@@ -2,7 +2,7 @@
  * AI营销助手API客户端
  */
 class AIMarketingAPIClient {
-    constructor(baseURL = 'https://mzhyi8c198x6.manus.space') {
+    constructor(baseURL = 'http://localhost:8003') {
         this.baseURL = baseURL;
         this.apiKey = null;
         this.secret = null;

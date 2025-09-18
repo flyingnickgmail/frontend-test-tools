@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeSimpleApp() {
     // 创建简化的API客户端
     apiClient = {
-        baseURL: 'https://mzhyi8c198x6.manus.space',
+        baseURL: 'http://localhost:8003',
         apiKey: 'demo_api_key',
         apiSecret: 'demo_secret',
         token: null,
@@ -233,14 +233,12 @@ async function simpleConnectAPI() {
         }
         
         // 获取配置
-        const baseURL = document.getElementById('api-base-url')?.value || 'https://mzhyi8c198x6.manus.space';
+        const baseURL = document.getElementById('api-base-url')?.value || 'http://localhost:8003';
         const apiKey = document.getElementById('api-key')?.value || 'demo_api_key';
         const apiSecret = document.getElementById('api-secret')?.value || 'demo_secret';
         
         // 更新API客户端配置
         apiClient.baseURL = baseURL;
-        apiClient.baseURL = "https://8000-iozocmozl0jw4if1u0bd7-0f6693c2.manusvm.computer"; // Force update to the new exposed URL
-
         apiClient.apiKey = apiKey;
         apiClient.apiSecret = apiSecret;
         
@@ -1451,7 +1449,7 @@ async function checkKnowledgeBaseStatus() {
         statusBtn.disabled = true;
         
         // 调用后台API获取知识库状态
-        const response = await fetch('https://mzhyi8c198x6.manus.space/api/v1/knowledge/status', {
+        const response = await fetch('http://localhost:8003/api/v1/knowledge/status', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'

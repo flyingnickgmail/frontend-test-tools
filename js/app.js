@@ -63,7 +63,7 @@ class App {
         const apiSecretElement = document.getElementById('api-secret');
 
         if (apiBaseUrlElement && !apiBaseUrlElement.value) {
-            apiBaseUrlElement.value = 'https://mzhyi8c198x6.manus.space';
+            apiBaseUrlElement.value = 'http://localhost:8003';
         }
 
         if (apiKeyElement && !apiKeyElement.value) {
