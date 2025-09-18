@@ -1,0 +1,11 @@
+test_id,question,expected_keywords,forbidden_keywords,check_source,priority,timeout
+REG-001,伊兰特有多少种颜色？,蓝色,红色,白色,黑色,灰色,停产,没有,true,HIGH,30
+REG-002,最近有什么优惠活动吗？,优惠,活动,金融,政策,已结束,过期,true,HIGH,30
+REG-003,你们的4S店在哪里？,地址,电话,地图,,false,MEDIUM,30
+REG-004,对比一下伊兰特和竞争对手,空间,油耗,智能,优势,不如,更差,true,HIGH,30
+REG-005,伊兰特的油耗怎么样？,油耗,百公里,经济,省油,费油,高耗,true,HIGH,30
+REG-006,我是郑州的应届毕业生想买车,经济,实用,性价比,预算,奢华,豪华,true,HIGH,30
+REG-007,青岛的二孩家庭需要什么车,空间,家庭,实用,安全,小车,两座,true,HIGH,30
+REG-008,伊兰特的安全配置如何,安全,配置,气囊,ESP,危险,不安全,true,MEDIUM,30
+REG-009,现在买车有什么金融政策,金融,贷款,分期,利率,全款,现金,true,MEDIUM,30
+REG-010,伊兰特适合什么人群,适合,人群,客户,用户,不适合,不推荐,true,MEDIUM,30

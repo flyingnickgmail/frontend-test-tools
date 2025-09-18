@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI营销助手测试工具 - 增强版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .api-config {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+        }
+
+        .api-config h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            color: #495057;
+            min-width: 80px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            min-width: 300px;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .status-connected {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-disconnected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .test-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+        }
+
+        .test-section h3 {
+            color: #495057;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .chat-interface {
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .input-row label {
+            font-weight: 600;
+            color: #495057;
+            min-width: 100px;
+        }
+
+        .input-row input, .input-row textarea {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        .input-row textarea {
+            min-height: 80px;
+        }
+
+        .chat-messages {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            background: white;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .message.user {
+            background: #e3f2fd;
+            margin-left: 50px;
+        }
+
+        .message.ai {
+            background: #f1f8e9;
+            margin-right: 50px;
+        }
+
+        .message-header {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+
+        .message-content {
+            line-height: 1.6;
+            color: #212529;
+        }
+
+        .ai-response-container {
+            background: #f1f8e9;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #4caf50;
+        }
+
+        .ai-response-text {
+            line-height: 1.6;
+            color: #212529;
+            margin-bottom: 10px;
+        }
+
+        .source-link {
+            display: inline-block;
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 4px 8px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 12px;
+            margin: 2px;
+            border: 1px solid #c8e6c9;
+        }
+
+        .source-link:hover {
+            background: #c8e6c9;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4facfe;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .test-results {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .test-result-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #dee2e6;
+        }
+
+        .test-result-item.passed {
+            border-left-color: #28a745;
+        }
+
+        .test-result-item.failed {
+            border-left-color: #dc3545;
+        }
+
+        .test-automation-controls {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .test-automation-controls h4 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .automation-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .input-group, .input-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .input-group label, .input-row label {
+                min-width: auto;
+                margin-bottom: 5px;
+            }
+
+            .automation-buttons {
+                flex-direction: column;
+            }
+
+            .message.user {
+                margin-left: 20px;
+            }
+
+            .message.ai {
+                margin-right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI营销助手测试工具</h1>
+            <p>增强版 - 支持自动化UI测试</p>
+        </div>
+
+        <div class="main-content">
+            <!-- API配置区域 -->
+            <div class="api-config">
+                <h3>🔧 API配置</h3>
+                <div class="input-group">
+                    <label for="api-url">API地址:</label>
+                    <input type="text" id="api-url" placeholder="http://localhost:8003" value="http://localhost:8003">
+                    <button class="btn btn-primary" id="connect-api">连接API</button>
+                    <span class="status-indicator status-disconnected" id="connection-status">未连接</span>
+                </div>
+            </div>
+
+            <!-- 自动化测试控制区域 -->
+            <div class="test-automation-controls">
+                <h4>🚀 自动化测试控制</h4>
+                <div class="automation-buttons">
+                    <button class="btn btn-success" id="run-regression-tests">运行回归测试</button>
+                    <button class="btn btn-warning" id="run-high-priority-tests">运行高优先级测试</button>
+                    <button class="btn btn-primary" id="run-single-test">运行单个测试</button>
+                    <button class="btn btn-primary" id="stop-tests">停止测试</button>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="test-progress"></div>
+                </div>
+                <div id="test-status">准备就绪</div>
+            </div>
+
+            <!-- 手动测试区域 -->
+            <div class="test-section">
+                <h3>💬 手动测试</h3>
+                <div class="chat-interface">
+                    <div class="chat-input-area">
+                        <div class="input-row">
+                            <label for="query-input">客户问题:</label>
+                            <textarea id="query-input" placeholder="请输入客户的问题..."></textarea>
+                        </div>
+                        <div class="input-row">
+                            <label for="advisor-notes">顾问备注:</label>
+                            <input type="text" id="advisor-notes" placeholder="可选的顾问备注信息">
+                        </div>
+                        <div class="input-row">
+                            <button class="btn btn-primary" id="analyze-customer">分析客户</button>
+                            <button class="btn btn-primary" id="clear-chat">清空对话</button>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="loading" id="loading">
+                            <div class="spinner"></div>
+                            正在分析客户需求...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 测试结果区域 -->
+            <div class="test-section">
+                <h3>📊 测试结果</h3>
+                <div class="test-results" id="test-results">
+                    <p>暂无测试结果</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let apiUrl = 'http://localhost:8003';
+        let isConnected = false;
+        let currentTests = [];
+        let testRunning = false;
+
+        // DOM元素
+        const apiUrlInput = document.getElementById('api-url');
+        const connectBtn = document.getElementById('connect-api');
+        const connectionStatus = document.getElementById('connection-status');
+        const queryInput = document.getElementById('query-input');
+        const advisorNotes = document.getElementById('advisor-notes');
+        const analyzeBtn = document.getElementById('analyze-customer');
+        const clearBtn = document.getElementById('clear-chat');
+        const chatMessages = document.getElementById('chat-messages');
+        const loading = document.getElementById('loading');
+        const testResults = document.getElementById('test-results');
+        const testProgress = document.getElementById('test-progress');
+        const testStatus = document.getElementById('test-status');
+
+        // 自动化测试按钮
+        const runRegressionBtn = document.getElementById('run-regression-tests');
+        const runHighPriorityBtn = document.getElementById('run-high-priority-tests');
+        const runSingleTestBtn = document.getElementById('run-single-test');
+        const stopTestsBtn = document.getElementById('stop-tests');
+
+        // API连接
+        connectBtn.addEventListener('click', async () => {
+            apiUrl = apiUrlInput.value.trim();
+            if (!apiUrl) {
+                alert('请输入API地址');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${apiUrl}/health`);
+                if (response.ok) {
+                    isConnected = true;
+                    connectionStatus.textContent = '已连接';
+                    connectionStatus.className = 'status-indicator status-connected';
+                    connectBtn.textContent = '重新连接';
+                } else {
+                    throw new Error('连接失败');
+                }
+            } catch (error) {
+                isConnected = false;
+                connectionStatus.textContent = '连接失败';
+                connectionStatus.className = 'status-indicator status-disconnected';
+                alert('API连接失败: ' + error.message);
+            }
+        });
+
+        // 分析客户
+        analyzeBtn.addEventListener('click', async () => {
+            const query = queryInput.value.trim();
+            if (!query) {
+                alert('请输入客户问题');
+                return;
+            }
+
+            if (!isConnected) {
+                alert('请先连接API');
+                return;
+            }
+
+            // 显示加载状态
+            loading.classList.add('show');
+            analyzeBtn.disabled = true;
+
+            // 添加用户消息
+            addMessage('user', '客户问题', query);
+            if (advisorNotes.value.trim()) {
+                addMessage('user', '顾问备注', advisorNotes.value.trim());
+            }
+
+            try {
+                const response = await fetch(`${apiUrl}/api/v1/enhanced-analyze`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        customer_input: query,
+                        advisor_notes: advisorNotes.value.trim()
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                
+                // 添加AI回答
+                addAIResponse(result);
+
+            } catch (error) {
+                addMessage('ai', 'Error', `分析失败: ${error.message}`);
+            } finally {
+                loading.classList.remove('show');
+                analyzeBtn.disabled = false;
+            }
+        });
+
+        // 清空对话
+        clearBtn.addEventListener('click', () => {
+            chatMessages.innerHTML = '<div class="loading" id="loading"><div class="spinner"></div>正在分析客户需求...</div>';
+            queryInput.value = '';
+            advisorNotes.value = '';
+        });
+
+        // 添加消息
+        function addMessage(type, title, content) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.innerHTML = `
+                <div class="message-header">${title}</div>
+                <div class="message-content">${content}</div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // 添加AI回答
+        function addAIResponse(result) {
+            const responseDiv = document.createElement('div');
+            responseDiv.className = 'ai-response-container';
+            
+            let responseHtml = '<div class="ai-response-text">';
+            
+            // 客户画像分析
+            if (result.customer_analysis && result.customer_analysis.persona_match) {
+                responseHtml += `<strong>客户画像:</strong> ${result.customer_analysis.persona_match}<br>`;
+                responseHtml += `<strong>置信度:</strong> ${(result.customer_analysis.confidence * 100).toFixed(1)}%<br><br>`;
+            }
+
+            // 增强画像分析
+            if (result.enhanced_persona_analysis && result.enhanced_persona_analysis.length > 0) {
+                responseHtml += '<strong>详细画像分析:</strong><br>';
+                result.enhanced_persona_analysis.forEach(persona => {
+                    responseHtml += `• ${persona.persona_name} (匹配度: ${(persona.match_score * 100).toFixed(1)}%)<br>`;
+                });
+                responseHtml += '<br>';
+            }
+
+            // 推荐策略
+            if (result.recommendations && result.recommendations.length > 0) {
+                responseHtml += '<strong>推荐策略:</strong><br>';
+                result.recommendations.forEach(rec => {
+                    responseHtml += `• ${rec}<br>`;
+                });
+                responseHtml += '<br>';
+            }
+
+            // 知识库状态
+            if (result.knowledge_base_status) {
+                responseHtml += '<strong>知识库状态:</strong><br>';
+                const status = result.knowledge_base_status;
+                responseHtml += `• 客户画像: ${status.customer_personas}个<br>`;
+                responseHtml += `• 销售策略: ${status.sales_strategies}个<br>`;
+                responseHtml += `• 市场洞察: ${status.market_insights}个<br>`;
+                responseHtml += `• 区域数据: ${status.regional_data}个<br>`;
+            }
+
+            responseHtml += '</div>';
+
+            // 添加模拟的引用来源
+            responseHtml += '<div class="source-links">';
+            responseHtml += '<a href="#" class="source-link">客户画像数据库</a>';
+            responseHtml += '<a href="#" class="source-link">销售策略指南</a>';
+            responseHtml += '<a href="#" class="source-link">市场分析报告</a>';
+            responseHtml += '</div>';
+
+            responseDiv.innerHTML = responseHtml;
+            chatMessages.appendChild(responseDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // 自动化测试功能
+        runRegressionBtn.addEventListener('click', () => {
+            runAutomatedTests('regression');
+        });
+
+        runHighPriorityBtn.addEventListener('click', () => {
+            runAutomatedTests('high-priority');
+        });
+
+        runSingleTestBtn.addEventListener('click', () => {
+            const testQuestion = prompt('请输入测试问题:');
+            if (testQuestion) {
+                runSingleTest(testQuestion);
+            }
+        });
+
+        stopTestsBtn.addEventListener('click', () => {
+            testRunning = false;
+            testStatus.textContent = '测试已停止';
+            updateProgress(0);
+        });
+
+        // 运行自动化测试
+        async function runAutomatedTests(type) {
+            if (testRunning) {
+                alert('测试正在运行中');
+                return;
+            }
+
+            if (!isConnected) {
+                alert('请先连接API');
+                return;
+            }
+
+            testRunning = true;
+            testStatus.textContent = `正在运行${type === 'regression' ? '回归' : '高优先级'}测试...`;
+            
+            // 模拟测试用例
+            const testCases = getTestCases(type);
+            const results = [];
+
+            for (let i = 0; i < testCases.length && testRunning; i++) {
+                const testCase = testCases[i];
+                updateProgress((i / testCases.length) * 100);
+                testStatus.textContent = `正在执行: ${testCase.test_id} - ${testCase.question}`;
+
+                try {
+                    const result = await runTestCase(testCase);
+                    results.push(result);
+                    displayTestResult(result);
+                } catch (error) {
+                    const errorResult = {
+                        test_id: testCase.test_id,
+                        passed: false,
+                        error: error.message
+                    };
+                    results.push(errorResult);
+                    displayTestResult(errorResult);
+                }
+
+                // 短暂延迟避免请求过快
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+
+            testRunning = false;
+            updateProgress(100);
+            testStatus.textContent = `测试完成 - 通过: ${results.filter(r => r.passed).length}/${results.length}`;
+        }
+
+        // 运行单个测试
+        async function runSingleTest(question) {
+            if (!isConnected) {
+                alert('请先连接API');
+                return;
+            }
+
+            const testCase = {
+                test_id: 'MANUAL-001',
+                question: question,
+                expected_keywords: [],
+                forbidden_keywords: [],
+                check_source: false
+            };
+
+            try {
+                const result = await runTestCase(testCase);
+                displayTestResult(result);
+            } catch (error) {
+                displayTestResult({
+                    test_id: testCase.test_id,
+                    passed: false,
+                    error: error.message
+                });
+            }
+        }
+
+        // 执行测试用例
+        async function runTestCase(testCase) {
+            const response = await fetch(`${apiUrl}/api/v1/enhanced-analyze`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    customer_dialogue: testCase.question,
+                    advisor_notes: ''
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            
+            // 简单的断言逻辑
+            const responseText = JSON.stringify(result).toLowerCase();
+            let passed = true;
+            let details = [];
+
+            // 检查期望关键词
+            if (testCase.expected_keywords && testCase.expected_keywords.length > 0) {
+                const foundKeywords = testCase.expected_keywords.filter(keyword => 
+                    responseText.includes(keyword.toLowerCase())
+                );
+                if (foundKeywords.length < testCase.expected_keywords.length * 0.5) {
+                    passed = false;
+                    details.push(`缺少期望关键词: ${testCase.expected_keywords.join(', ')}`);
+                }
+            }
+
+            // 检查禁用关键词
+            if (testCase.forbidden_keywords && testCase.forbidden_keywords.length > 0) {
+                const foundForbidden = testCase.forbidden_keywords.filter(keyword => 
+                    responseText.includes(keyword.toLowerCase())
+                );
+                if (foundForbidden.length > 0) {
+                    passed = false;
+                    details.push(`发现禁用关键词: ${foundForbidden.join(', ')}`);
+                }
+            }
+
+            return {
+                test_id: testCase.test_id,
+                question: testCase.question,
+                passed: passed,
+                response: result,
+                details: details
+            };
+        }
+
+        // 显示测试结果
+        function displayTestResult(result) {
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result-item ${result.passed ? 'passed' : 'failed'}`;
+            
+            let resultHtml = `
+                <strong>${result.test_id}</strong> - ${result.passed ? '✅ 通过' : '❌ 失败'}<br>
+                <small>问题: ${result.question}</small><br>
+            `;
+
+            if (result.details && result.details.length > 0) {
+                resultHtml += `<small>详情: ${result.details.join('; ')}</small><br>`;
+            }
+
+            if (result.error) {
+                resultHtml += `<small style="color: red;">错误: ${result.error}</small>`;
+            }
+
+            resultDiv.innerHTML = resultHtml;
+            testResults.appendChild(resultDiv);
+            testResults.scrollTop = testResults.scrollHeight;
+        }
+
+        // 更新进度条
+        function updateProgress(percentage) {
+            testProgress.style.width = `${percentage}%`;
+        }
+
+        // 获取测试用例
+        function getTestCases(type) {
+            const allCases = [
+                {
+                    test_id: 'REG-001',
+                    question: '伊兰特有多少种颜色？',
+                    expected_keywords: ['蓝色', '红色', '白色', '黑色', '灰色'],
+                    forbidden_keywords: ['停产', '没有'],
+                    check_source: true,
+                    priority: 'HIGH'
+                },
+                {
+                    test_id: 'REG-002',
+                    question: '最近有什么优惠活动吗？',
+                    expected_keywords: ['优惠', '活动', '金融', '政策'],
+                    forbidden_keywords: ['已结束', '过期'],
+                    check_source: true,
+                    priority: 'HIGH'
+                },
+                {
+                    test_id: 'REG-003',
+                    question: '我是郑州的应届毕业生想买车',
+                    expected_keywords: ['经济', '实用', '性价比', '预算'],
+                    forbidden_keywords: ['奢华', '豪华'],
+                    check_source: true,
+                    priority: 'HIGH'
+                },
+                {
+                    test_id: 'REG-004',
+                    question: '青岛的二孩家庭需要什么车',
+                    expected_keywords: ['空间', '家庭', '实用', '安全'],
+                    forbidden_keywords: ['小车', '两座'],
+                    check_source: true,
+                    priority: 'HIGH'
+                },
+                {
+                    test_id: 'REG-005',
+                    question: '伊兰特的油耗怎么样？',
+                    expected_keywords: ['油耗', '百公里', '经济', '省油'],
+                    forbidden_keywords: ['费油', '高耗'],
+                    check_source: true,
+                    priority: 'MEDIUM'
+                }
+            ];
+
+            if (type === 'high-priority') {
+                return allCases.filter(c => c.priority === 'HIGH');
+            }
+            
+            return allCases;
+        }
+
+        // 页面加载完成后自动连接API
+        window.addEventListener('load', () => {
+            connectBtn.click();
+        });
+    </script>
+</body>
+</html>
